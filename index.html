@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Integrated Supply Chain — Technical Documentation</title>
+<style>
+  :root{
+    --blue:#1a56db; --blue-dark:#12377f; --blue-bg:#eef3fe;
+    --ink:#1a1d24; --ink-soft:#50566b; --ink-mute:#80869b;
+    --line:#e3e6ee; --bg:#ffffff; --bg-alt:#f7f8fb;
+    --code-bg:#1a1d24; --code-text:#d8dcf0;
+    --warn-bg:#fff6e8; --warn-line:#f0c36d; --warn-text:#8a5a00;
+    --ok-bg:#eafaf0; --ok-line:#79d79a; --ok-text:#176a3b;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:var(--ink); background:var(--bg); line-height:1.65;}
+  a{color:var(--blue); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace; font-size:0.88em; background:var(--bg-alt); padding:0.1em 0.4em; border-radius:4px; color:var(--blue-dark);}
+  pre{background:var(--code-bg); color:var(--code-text); padding:16px 18px; border-radius:8px; overflow-x:auto; font-size:13px; line-height:1.55;}
+  pre code{background:none; padding:0; color:inherit;}
+
+  /* layout */
+  .shell{display:flex; max-width:1280px; margin:0 auto;}
+  .sidebar{width:260px; flex-shrink:0; padding:32px 20px; position:sticky; top:0; height:100vh; overflow-y:auto; border-right:1px solid var(--line);}
+  .sidebar .brand{font-weight:700; font-size:15px; color:var(--ink); margin-bottom:4px;}
+  .sidebar .brand-sub{font-size:12px; color:var(--ink-mute); margin-bottom:28px;}
+  .sidebar nav a{display:block; font-size:13.5px; color:var(--ink-soft); padding:6px 10px; border-radius:6px; margin-bottom:2px;}
+  .sidebar nav a:hover{background:var(--bg-alt); text-decoration:none;}
+  .sidebar nav .section-label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-mute); margin:20px 0 6px 10px;}
+  .sidebar nav .section-label:first-child{margin-top:0;}
+  .sidebar nav a.sub{padding-left:22px; font-size:13px; color:var(--ink-mute);}
+
+  main{flex:1; min-width:0; padding:40px 56px 120px;}
+  .pagehead{border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:40px;}
+  .pagehead .eyebrow{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--blue); margin-bottom:10px;}
+  .pagehead h1{font-size:34px; margin:0 0 12px; font-weight:700;}
+  .pagehead p{font-size:16px; color:var(--ink-soft); max-width:700px; margin:0;}
+
+  section{margin-bottom:64px; scroll-margin-top:24px;}
+  section h2{font-size:24px; font-weight:700; margin:0 0 6px; padding-top:8px; border-top:1px solid var(--line); padding-top:40px;}
+  section h2:first-of-type{border-top:none; padding-top:0;}
+  .dek{color:var(--ink-soft); font-size:15px; margin:0 0 24px;}
+  h3{font-size:18px; font-weight:700; margin:32px 0 10px;}
+  h4{font-size:15px; font-weight:700; margin:22px 0 8px;}
+  p{font-size:15px; color:var(--ink); margin:0 0 14px;}
+  ul,ol{font-size:15px; margin:0 0 16px; padding-left:22px;}
+  li{margin-bottom:6px;}
+
+  table{width:100%; border-collapse:collapse; margin:18px 0 24px; font-size:13.5px;}
+  th{text-align:left; background:var(--bg-alt); color:var(--ink-soft); font-weight:700; font-size:11.5px; text-transform:uppercase; letter-spacing:0.03em; padding:9px 12px; border-bottom:1px solid var(--line);}
+  td{padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+
+  .callout{border-radius:8px; padding:14px 18px; margin:20px 0; font-size:14px; border-left:3px solid;}
+  .callout.note{background:var(--blue-bg); border-color:var(--blue); color:var(--blue-dark);}
+  .callout.warn{background:var(--warn-bg); border-color:var(--warn-line); color:var(--warn-text);}
+  .callout.ok{background:var(--ok-bg); border-color:var(--ok-line); color:var(--ok-text);}
+  .callout strong{display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;}
+
+  .cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin:20px 0;}
+  .card{border:1px solid var(--line); border-radius:10px; padding:16px 18px; background:var(--bg-alt);}
+  .card .tag{display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--blue); background:var(--blue-bg); padding:2px 8px; border-radius:4px; margin-bottom:8px;}
+  .card h4{margin:0 0 6px; font-size:15px;}
+  .card p{margin:0; font-size:13.5px; color:var(--ink-soft);}
+
+  .flow{display:flex; align-items:center; flex-wrap:wrap; gap:0; margin:20px 0;}
+  .flow .step{border:1px solid var(--line); border-radius:8px; padding:10px 14px; font-size:13px; background:var(--bg); font-weight:600; color:var(--ink);}
+  .flow .arrow{color:var(--ink-mute); padding:0 10px; font-size:14px;}
+
+  .pill{display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:20px; margin-right:6px;}
+  .pill.blue{background:var(--blue-bg); color:var(--blue-dark);}
+  .pill.gray{background:var(--bg-alt); color:var(--ink-soft); border:1px solid var(--line);}
+
+  .srcline{font-size:11.5px; color:var(--ink-mute); margin-top:-10px; margin-bottom:20px;}
+  .srcline code{font-size:11px;}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">Integrated Supply Chain</div>
+    <div class="brand-sub">Technical documentation</div>
+    <nav>
+      <a href="#overview">Overview</a>
+      <div class="section-label">Hierarchies</div>
+      <a class="sub" href="#why-hierarchies">Why dedicated trees</a>
+      <a class="sub" href="#four-trees">The four trees</a>
+      <a class="sub" href="#core-fields">Core hierarchy fields</a>
+      <a class="sub" href="#sync">Automated sync</a>
+      <a class="sub" href="#typed-hierarchies">Strongly typed hierarchies</a>
+      <a class="sub" href="#extending">Extending a hierarchy</a>
+      <div class="section-label">Data model &amp; domains</div>
+      <a class="sub" href="#domains">10 schema-space domains</a>
+      <a class="sub" href="#nodes-edges">Nodes vs. typed edges</a>
+      <a class="sub" href="#edge-catalog">Edge catalog</a>
+      <div class="section-label">Agents &amp; tools</div>
+      <a class="sub" href="#agents">Atlas AI agents</a>
+      <a class="sub" href="#cascade">The tool cascade</a>
+      <a class="sub" href="#skills">Grounding &amp; escalation skills</a>
+      <a class="sub" href="#tools">Custom tools &amp; functions</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="pagehead">
+      <div class="eyebrow">Cognite Data Fusion · ISC</div>
+      <h1>Integrated Supply Chain</h1>
+      <p>How Cognite's Integrated Supply Chain offering models hierarchies, organizes data into governed domains, and grounds AI agents in a single knowledge graph spanning the supply chain and the plant floor.</p>
+    </div>
+
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>Integrated Supply Chain (ISC) extends the Cognite Data Fusion Core Data Model (CDM) with a purpose-built data model for industrial supply chains — procurement, inventory, logistics, demand, planning, and plant-floor operations — modeled as one connected knowledge graph rather than a collection of disconnected systems.</p>
+      <p>Three layers make up the offering:</p>
+      <div class="cards">
+        <div class="card">
+          <div class="tag">Hierarchies</div>
+          <h4>Dedicated materialized trees</h4>
+          <p>Four BTP-owned hierarchy trees (BusinessUnits, GeoLocations, Products, StorageLocations) run on their own containers, independent of <code>cdf_cdm</code>, with paths computed automatically.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Data model</div>
+          <h4>10 governed domains</h4>
+          <p>Supply-chain entities are split across ten schema spaces, connected where needed by typed edges that carry their own business facts.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Agents</div>
+          <h4>Atlas AI, grounded</h4>
+          <p>Three published agents answer plain-language questions over the graph, escalating from fast single-hop reads to specialist multi-hop tools only when needed.</p>
+        </div>
+      </div>
+      <div class="callout note">
+        <strong>Scope note</strong>
+        <code>FunctionalAsset</code> — the generalized ISA-95 physical-asset view — is deliberately excluded from the BTP hierarchy model. It stays on CDM's native <code>CogniteAsset</code> path tree and links into ISC domains via ordinary direct relations, keeping operational asset structure isolated from commercial/organizational hierarchies.
+      </div>
+    </section>
+
+    <section id="why-hierarchies">
+      <h2>Hierarchies</h2>
+      <p class="dek">Why Integrated Supply Chain replaces one shared asset tree with four dedicated, materialized hierarchy trees.</p>
+
+      <h3 id="why-hierarchies-h">Why dedicated trees, not one shared CDM container</h3>
+      <p>Standard CDF CDM models physical plant/manufacturing equipment on a single, unified asset hierarchy container (<code>cdf_cdm</code> / <code>CogniteAsset</code>). A supply chain, however, has several distinct hierarchical concepts — organizational, geographic, commercial, and logistics — that don't belong in one shared container.</p>
+      <table>
+        <tr><th>Single CDM container</th><th>ISC dedicated containers</th></tr>
+        <tr><td>Every instance shares one asset tree</td><td>Each hierarchy owns its own container</td></tr>
+        <tr><td>An update recomputes paths for the affected subtree</td><td>An update computes paths only within that tree</td></tr>
+        <tr><td>One overcrowded container risks a performance bottleneck at scale</td><td>Other trees stay untouched — no shared bottleneck</td></tr>
+      </table>
+      <p class="srcline">Source: <code>adr/0001-custom-hierarchy-on-btp-containers.md</code></p>
+
+      <h3 id="four-trees">The four trees</h3>
+      <p>Each tree is BTP-owned, materialized on its own dedicated container, and never mixed into <code>cdf_cdm</code>.</p>
+      <table>
+        <tr><th>Tree</th><th>Shape</th></tr>
+        <tr><td><strong>BusinessUnits</strong></td><td>Rooted at <code>Company</code>, branching three ways:<br><code>Company → BusinessUnit → CostCenter</code><br><code>Company → ControllingArea → ProfitCenter</code><br><code>Company → PurchasingOrg</code></td></tr>
+        <tr><td><strong>GeoLocations</strong></td><td><code>GeoRegion → Country → County → City</code></td></tr>
+        <tr><td><strong>Products</strong></td><td><code>ProductSector → ProductFamily → ProductGroup → ProductSubgroup</code></td></tr>
+        <tr><td><strong>StorageLocations</strong></td><td><code>Warehouse → Zone → StorageBin</code></td></tr>
+      </table>
+      <div class="callout warn">
+        <strong>Common mistake</strong>
+        BusinessUnits is not a single six-level chain (Company → ControllingArea → BusinessUnit → CostCenter → ProfitCenter → PurchasingOrg). The deployed views show Company as the root with three separate branches, as shown above.
+      </div>
+
+      <h3 id="core-fields">Core hierarchy fields</h3>
+      <p>Every materialized node carries five properties. Ingestion sets only <code>parent</code> (plus scalar fields); everything else is computed automatically.</p>
+      <table>
+        <tr><th>Field</th><th>Set by</th><th>Description</th></tr>
+        <tr><td><code>parent</code></td><td>Ingestion</td><td>Immediate single-hop parent; <code>null</code> at the root</td></tr>
+        <tr><td><code>root</code></td><td>Path sync</td><td>Top-level node of the tree; self-reference if this node is the root</td></tr>
+        <tr><td><code>path</code></td><td>Path sync</td><td>Ordered chain <code>[root, …, self]</code>; max 100 levels</td></tr>
+        <tr><td><code>pathLastUpdatedTime</code></td><td>Path sync</td><td>UTC timestamp of the last path/root recomputation</td></tr>
+        <tr><td><code>children</code></td><td><em>virtual — never stored</em></td><td>Resolved at query time as the reverse of <code>parent</code> (<code>multi_reverse_direct_relation</code>)</td></tr>
+      </table>
+      <p class="srcline">Source: <code>adr/0001-custom-hierarchy-on-btp-containers.md</code>, Appendix B field schema</p>
+
+      <h3 id="sync">Automated path synchronization</h3>
+      <div class="flow">
+        <div class="step">DMS instance change</div><div class="arrow">→</div>
+        <div class="step">wf_btp_hierarchy_path<br><span style="font-weight:400;color:var(--ink-mute);font-size:11.5px;">Workflow trigger</span></div><div class="arrow">→</div>
+        <div class="step">fn_btp_hierarchy<br><span style="font-weight:400;color:var(--ink-mute);font-size:11.5px;">Function</span></div><div class="arrow">→</div>
+        <div class="step">root, path,<br>pathLastUpdatedTime</div>
+      </div>
+      <p>Path synchronization runs asynchronously whenever an instance changes. Two safeguards keep it from running away:</p>
+      <ul>
+        <li><strong>Path-write echo loop</strong> — skips reprocessing a change that was itself caused by the sync's own prior write, preventing infinite recomputation loops (implemented as <code>path_echo_skip</code> in <code>path_sync_cursor.py</code>).</li>
+        <li><strong>Per-view lock</strong> — blocks concurrent writers on the same view, so locking is scoped per hierarchy, never global.</li>
+      </ul>
+      <p>Four separate <code>WorkflowTrigger</code>s — one per tree (<code>business_hierarchy</code>, <code>geo_location</code>, <code>product_hierarchy</code>, <code>warehouse</code>) — feed the same shared function and workflow, so isolation between trees comes from per-view locking, not from running separate code per tree.</p>
+
+      <h3 id="typed-hierarchies">Strongly typed hierarchies</h3>
+      <p>Legacy trees relied on a plain text discriminator field (e.g. <code>hierarchyType</code>) checked only in application code. Strongly typed hierarchies replace this with formal schema types, enforced directly in the data model.</p>
+      <div class="flow">
+        <div class="step">Shared hierarchy container<br><span style="font-weight:400;color:var(--ink-mute);font-size:11.5px;">parent, root, path, scalars</span></div><div class="arrow">→</div>
+        <div class="step">Interface view<br><span style="font-weight:400;color:var(--ink-mute);font-size:11.5px;">path-sync target</span></div><div class="arrow">→</div>
+        <div class="step">Concrete per-level views<br><span style="font-weight:400;color:var(--ink-mute);font-size:11.5px;">e.g. City, ProductFamily</span></div>
+      </div>
+      <p>A <code>DeclaredTypes</code> catalog, combined with a <code>filter.equals</code> filter on the catalog-instance <code>externalId</code>, partitions instances from the shared container deterministically into exactly one concrete view. AI agents default to reasoning over concrete per-level views, touching the interface view only when explicitly required.</p>
+      <div class="callout note">
+        <strong>Data model split</strong>
+        CDF caps a single data model at 100 views. Interface views now register on per-domain models (<code>OrganizationalFoundation</code> for BusinessUnits/GeoLocations/Products, <code>MaterialManagement</code> for StorageLocations), while concrete per-level views live on <code>isc_typed_model</code>. The original single <code>integrated_supply_chain</code> base model is legacy and no longer deployed (<code>adr/0013-per-domain-datamodels.md</code>).
+      </div>
+
+      <h3 id="extending">Extending a hierarchy</h3>
+      <table>
+        <tr><th>Scenario</th><th>Who does it</th></tr>
+        <tr><td>Build a brand-new, custom hierarchy</td><td>Self-service: design levels → reuse the shared <code>fn_btp_hierarchy</code>/<code>wf_btp_hierarchy_path</code> runtime and platform state containers (<code>FunctionSyncState</code>, <code>RawIngestState</code> in <code>sp_isc_platform</code>) → add a path trigger → deploy</td></tr>
+        <tr><td>Add a level to an existing <em>custom</em> hierarchy you built</td><td>Self-service — the existing interface trigger already covers the shared container; no new trigger needed</td></tr>
+        <tr><td>Add a level to one of the four <em>shipped</em> hierarchies (BusinessUnits, GeoLocations, Products, StorageLocations)</td><td><strong>Not self-service.</strong> This changes <code>isc_core</code>'s frozen schema — a product change, raised with Cognite rather than edited directly</td></tr>
+      </table>
+      <p class="srcline">Source: <code>offering/docs/create-hierarchy-instructions.md</code>; frozen-core rule in <code>adr/0009-typed-hierarchy-interface-pattern.md</code></p>
+    </section>
+
+    <section id="domains">
+      <h2>Data model &amp; domains</h2>
+      <p class="dek">How ISC splits the knowledge graph into governed schema spaces, and how typed edges connect them.</p>
+
+      <h3>Ten schema-space domains</h3>
+      <p>Procurement, inventory, logistics, and plant-floor operations inside one unorganized container makes access control impossible and maintenance fragile. ISC divides the graph into ten specialized schema spaces, each isolating domain-specific entities while staying connected to the rest of the graph.</p>
+      <table>
+        <tr><th>Domain</th><th>Space</th><th>Covers</th></tr>
+        <tr><td>Organizational Foundation</td><td><code>sp_organizational_foundation</code></td><td>Hierarchy interfaces, products, and notifications</td></tr>
+        <tr><td>Material &amp; Inventory</td><td><code>sp_material_management</code></td><td>Material masters, inventory, lots, and reservations</td></tr>
+        <tr><td>Sourcing &amp; Procurement</td><td><code>sp_sourcing_procurement</code></td><td>Suppliers and purchase documents</td></tr>
+        <tr><td>Customer Demand</td><td><code>sp_customer_demand_fulfilment</code></td><td>Customers and orders</td></tr>
+        <tr><td>Shipment &amp; Logistics</td><td><code>sp_shipment_delivery</code></td><td>Lanes, schedules, shipments, and execution edges</td></tr>
+        <tr><td>Planning &amp; Forecasting</td><td><code>sp_plan_forecast</code></td><td>Plans, forecasts, and allocations</td></tr>
+        <tr><td>Technical Structure</td><td><code>sp_technical_structure</code></td><td>Bill of materials</td></tr>
+        <tr><td>Asset Maintenance</td><td><code>sp_asset_maintenance</code></td><td>Functional assets and work orders</td></tr>
+        <tr><td>ISA Manufacturing</td><td><code>sp_isa_manufacturing</code></td><td>Production schedules, equipment, personnel, batches, and recipes</td></tr>
+        <tr><td>Platform</td><td><code>sp_isc_platform</code></td><td>Ingest and function sync state</td></tr>
+      </table>
+      <p class="srcline">Source: each domain's own <code>*.DataModel.yaml</code> <code>description</code> field; full list in <code>isc_model.yaml</code></p>
+      <div class="callout warn">
+        <strong>Common mistake</strong>
+        <code>sp_isa_manufacturing</code> is sometimes mis-typed as <code>ssp_manufacturing</code>. The <code>ssp_</code> prefix belongs only to <code>sp_ssp_supply_chain</code>, a legacy, no-longer-deployed monolith model — unrelated to the current manufacturing domain.
+      </div>
+
+      <h3 id="nodes-edges">Nodes vs. typed edges</h3>
+      <p>A <strong>node</strong> represents a standalone business entity (<code>MaterialMaster</code>, <code>Supplier</code>, <code>CustomerOrder</code>) with scalar properties that exist independently. A <strong>typed edge</strong> models a relationship that carries facts of its own — a reserved quantity, a unit cost, a transit date. The deciding test for using an edge is whether the relationship carries its own facts, not simply whether it's many-to-many; a plain 1:N structural link with no extra properties stays a direct relation.</p>
+      <p class="srcline">Source: <code>adr/0002-edge-native-many-to-many-data-model.md</code></p>
+
+      <h3 id="edge-catalog">Edge catalog</h3>
+      <table>
+        <tr><th>Edge</th><th>Connects</th><th>Carries</th></tr>
+        <tr><td><code>MaterialReservation</code><br><span style="color:var(--ink-mute);font-size:12px;">(via <code>reservedForCustomerOrder</code>, reused for work-order and production-request reservations too)</span></td><td>MaterialInventory ↔ CustomerOrder</td><td><code>reservationNumber</code>, <code>quantityReserved</code>, <code>reservationDate</code>, <code>requirementDate</code></td></tr>
+        <tr><td><code>SupplierSuppliesMaterial</code></td><td>Supplier → MaterialMaster</td><td><code>unitCost</code>, <code>currency</code>, <code>minQuantity</code>, <code>maxQuantity</code>, <code>contractRef</code>, <code>otifScore</code></td></tr>
+        <tr><td><code>UsesTransportationLane</code></td><td>Shipment ↔ TransportationLane</td><td><code>plannedTransitDays</code>, <code>actualTransitDays</code>, <code>legSequence</code>, <code>legRole</code>, <code>actualCost</code>, <code>costCurrency</code>, <code>delayReason</code>, <code>customsClearanceRequired</code></td></tr>
+      </table>
+      <div class="callout warn">
+        <strong>Common mistakes</strong>
+        The commercial edge is <code>SupplierSuppliesMaterial</code>, not the shorter <code>SuppliesMaterial</code>. Its minimum-order-quantity field is <code>minQuantity</code> (not <code>minimumOrderQuantity</code>), its contract reference is <code>contractRef</code> (not <code>contractReference</code>), and its OTIF field is <code>otifScore</code> (not <code>onTimeInFullRate</code>). The transportation-lane edge's cost fields are <code>actualCost</code> + <code>costCurrency</code> — there is no <code>legCost</code> field.
+      </div>
+    </section>
+
+    <section id="agents">
+      <h2>Agents &amp; tools</h2>
+      <p class="dek">How Atlas AI agents are grounded in the ISC knowledge graph, and the tool cascade behind every answer.</p>
+
+      <h3>The three published Atlas AI agents</h3>
+      <div class="cards">
+        <div class="card">
+          <div class="tag">Entry point</div>
+          <h4>Integrated Supply Chain (Main)</h4>
+          <p>Single entry point — answers most questions and routes the rest. Resolves ~90%+ of plain-language planner queries using single-hop reads.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Specialist</div>
+          <h4>Graph Traversal (Query)</h4>
+          <p>Multi-hop impact questions, typed hierarchy navigation, and schedule war-room analysis.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Specialist</div>
+          <h4>Watch Tower (Query)</h4>
+          <p>Delayed shipments, notification cascades, and stale inventory — exception monitoring.</p>
+        </div>
+      </div>
+      <p class="srcline">Source: <code>offering/docs/atlas-supply-chain-agents.md</code>; <code>adr/0012-main-agent-single-entry-retire-supervisor-scout.md</code></p>
+
+      <h3 id="cascade">The tool cascade</h3>
+      <p>Cheapest tier first: the entry agent answers most questions with a single query. Specialists and custom functions only run when it cannot.</p>
+      <div class="flow">
+        <div class="step">Planner question</div><div class="arrow">→</div>
+        <div class="step">Main agent<br><span style="font-weight:400;color:var(--ink-mute);font-size:11.5px;">loads skill playbooks</span></div><div class="arrow">→</div>
+        <div class="step">ISC Atlas Query</div><div class="arrow">→</div>
+        <div class="step">Grounded answer</div>
+      </div>
+      <p>Escalation triggers when the query returns empty or the answer needs multi-hop data:</p>
+      <table>
+        <tr><th>Condition</th><th>Routes to</th></tr>
+        <tr><td>Query empty / multi-hop impact needed</td><td>Graph Traversal</td></tr>
+        <tr><td>Delays / exceptions</td><td>Watch Tower</td></tr>
+      </table>
+      <p>Both specialists run the same cascade: <strong>ISC Atlas Query → ISC Graph Query → ISC Insight</strong>, so behavior stays predictable regardless of which specialist is invoked.</p>
+
+      <h3 id="skills">Grounding &amp; escalation skills</h3>
+      <p>Before calling any tool, every agent loads skill playbooks that keep queries honest and prevent hallucinated view names.</p>
+      <table>
+        <tr><th>Tier</th><th>Skill</th><th>Loaded by</th><th>Purpose</th></tr>
+        <tr><td rowspan="2">Grounding</td><td><code>isc-model-bootstrap</code></td><td>All three agents</td><td>View spaces, edge families, and data anchors — e.g. <code>PurchaseOrderLineItem</code> lives in <code>sp_sourcing_procurement</code></td></tr>
+        <tr><td><code>isc-atlas-query-tool</code></td><td>All three agents</td><td>Query patterns and first-call templates with fixed spaces — e.g. "countries with assets" resolves to the <code>Country</code> view</td></tr>
+        <tr><td rowspan="2">Escalation</td><td><code>graph-edge-navigation</code></td><td>Graph &amp; Watch only</td><td>Edge-family picker — e.g. work-order reservations use the <code>MaterialReservation</code> edge</td></tr>
+        <tr><td><code>isc-insight</code></td><td>Graph &amp; Watch only</td><td>Picks among 13 multi-hop insight modes, used only after Query and Graph have been tried</td></tr>
+      </table>
+      <p class="srcline">Source: <code>integrated-supply-chain-offering/modules/isc/isc_core/agents/*.Skill.md</code></p>
+
+      <h3 id="tools">Custom tools &amp; functions</h3>
+      <table>
+        <tr><th>Tool</th><th>Type</th><th>Used by</th><th>Purpose</th></tr>
+        <tr><td><strong>ISC Atlas Query</strong></td><td><code>query</code></td><td>Main, Graph, Watch</td><td>Single-hop reads: <code>list_instances</code>, <code>retrieve_instances</code>, <code>aggregate_instances</code>, <code>search_instances</code></td></tr>
+        <tr><td><strong>ISC Graph Query</strong><br><span style="color:var(--ink-mute);font-size:12px;"><code>fn_btp_graph</code></span></td><td><code>callFunction</code></td><td>Graph, Watch</td><td>Hierarchy and edge traversal the standard tool can't express, across 8 modes: <code>classify_graph_question</code>, <code>resolve_view_context</code>, <code>resolve_hierarchy_scope</code>, <code>list_hierarchy_subtree</code>, <code>list_edges_from_anchor</code>, <code>query_graph_hop</code>, <code>aggregate_subgraph</code>, <code>validate_traversal_payload</code></td></tr>
+        <tr><td><strong>ISC Insight</strong><br><span style="color:var(--ink-mute);font-size:12px;"><code>fn_btp_insight</code></span></td><td><code>callFunction</code></td><td>Graph, Watch</td><td>Multi-hop questions as one flat table, across 13 modes including <code>supplier_disruption_exposure</code>, <code>supplier_customer_exposure</code>, <code>schedule_war_room</code>, <code>competing_demand</code></td></tr>
+      </table>
+      <p class="srcline">Source: agent tool definitions in <code>*.Agent.yaml</code>; <code>fn_btp_graph/handler_dispatch.py</code> (<code>MODE_HANDLERS</code>); <code>fn_btp_insight/models.py</code> (<code>VALID_INSIGHT_TYPES</code>)</p>
+      <div class="callout warn">
+        <strong>Common mistake</strong>
+        ISC Graph Query is sometimes documented as having 7 traversal modes — this undercounts the deployed implementation by one. <code>resolve_view_context</code> is a real, callable mode present in the function's own <code>MODE_HANDLERS</code> dispatch table and in both agents' inlined tool schema, even though it's missing from <code>architecture.md</code>'s own mode list.
+      </div>
+      <div class="callout ok">
+        <strong>Note</strong>
+        The main entry agent only ever calls ISC Atlas Query directly. It reaches ISC Graph Query and ISC Insight exclusively by delegating to the Graph or Watch Tower specialist subagents — it never calls <code>callFunction</code> tools itself.
+      </div>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>
